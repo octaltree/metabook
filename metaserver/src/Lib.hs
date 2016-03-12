@@ -10,6 +10,7 @@ import Data.Aeson.TH
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
+import Control.Monad.IO.Class (liftIO)
 
 data User = User
   { userId        :: Int
@@ -20,6 +21,7 @@ data User = User
 $(deriveJSON defaultOptions ''User)
 
 type API = "users" :> Get '[JSON] [User]
+  :<|> "users" :> ReqBody '[JSON] User :> Post '[JSON] User
   :<|> "users" :> Capture "id" Int :> Get '[JSON] User
 
 startApp :: IO ()
@@ -33,6 +35,7 @@ api = Proxy
 
 server :: Server API
 server = return users
+  :<|> (\x -> liftIO $ return $ head users)
   :<|> return . \int -> head $ filter ((==int) . userId) users
 
 users :: [User]
