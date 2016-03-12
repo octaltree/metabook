@@ -11,6 +11,7 @@ dmm タグ有
 * book
   - book_id
   - post_at
+  - ISBN can Null
 
 * title
   - title_id
