@@ -1,0 +1,56 @@
+とらのあなは使えない
+getchu タグ有
+gyutto タグ有
+dmm タグ有
+* dlsite
+  - dlsite_id
+  - product_id
+  - 
+
+# host
+* book
+  - book_id
+  - post_at
+
+* title
+  - title_id
+  - body
+  - book_id
+  - post_at
+
+* writer
+  - writer_id
+  - body
+
+* publisher
+  - publisher_id
+  - body
+
+* tag
+  - tag_id
+  - body
+
+* writermap
+  - writermap_id
+  - writer_id
+  - book_id
+  - post_at
+
+* publishermap
+  - publishermap_id
+  - publisher_id
+  - book_id
+  - post_at
+
+* tagmap
+  - tagmap_id
+  - tag_id
+  - book_id
+  - post_at
+
+# manager
+* url
+  - url_id
+  - body
+  - book_id
+  - post_at
