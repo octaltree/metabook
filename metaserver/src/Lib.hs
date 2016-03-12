@@ -23,6 +23,7 @@ $(deriveJSON defaultOptions ''User)
 type API = "users" :> Get '[JSON] [User]
   :<|> "users" :> ReqBody '[JSON] User :> Post '[JSON] User
   :<|> "users" :> Capture "id" Int :> Get '[JSON] User
+  :<|> "users" :> Capture "id" Int :> ReqBody '[JSON] User :> Put '[JSON] ()
   :<|> "users" :> Capture "id" Int :> Delete '[JSON] ()
 
 startApp :: IO ()
@@ -38,6 +39,7 @@ server :: Server API
 server = return users
   :<|> (\x -> liftIO $ return $ head users)
   :<|> (return . \int -> head $ filter ((==int) . userId) users)
+  :<|> (\id -> \obj -> liftIO $ print obj)
   :<|> (liftIO . print)
 
 users :: [User]
