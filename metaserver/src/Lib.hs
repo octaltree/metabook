@@ -20,6 +20,7 @@ data User = User
 $(deriveJSON defaultOptions ''User)
 
 type API = "users" :> Get '[JSON] [User]
+  :<|> "users" :> Capture "id" Int :> Get '[JSON] User
 
 startApp :: IO ()
 startApp = run 8080 app
@@ -32,6 +33,7 @@ api = Proxy
 
 server :: Server API
 server = return users
+  :<|> return . \int -> head $ filter ((==int) . userId) users
 
 users :: [User]
 users = [ User 1 "Isaac" "Newton"
