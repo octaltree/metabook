@@ -22,6 +22,7 @@ library
                      , wai
                      , warp
                      , transformers
+                     , persistent
   default-language:    Haskell2010
 
 executable metaserver

@@ -11,6 +11,7 @@ import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
 import Control.Monad.IO.Class (liftIO)
+import Database.Persist
 
 data User = User
   { userId        :: Int
