@@ -16,4 +16,27 @@ api :: Proxy API
 api = Proxy
 
 server :: Server API
-server = undefined
+server = serverBook
+  :<|> serverCircle
+  :<|> serverWriter
+  :<|> serverTag
+
+serverBook :: Server BookEP
+serverBook = handlerGetAllBooks
+  :<|> undefined
+  :<|> handlerGetBook
+  :<|> undefined
+  :<|> undefined
+
+serverCircle :: Server CircleEP
+serverCircle = undefined
+
+serverWriter :: Server WriterEP
+serverWriter = undefined
+
+serverTag :: Server TagEP
+serverTag = undefined
+
+handlerGetAllBooks = return [Book [] [] [] [] []]
+
+handlerGetBook idx = return $ Book [] [] [] [] []
