@@ -71,4 +71,3 @@ handlerGetAllTags :: EitherT ServantErr IO [String]
 handlerGetAllTags = runSqlite sqliteFile $ do
   bks <- selectList [BookId !=. (BookKey $ SqlBackendKey $ -1)] []
   return $ nub $ concat $ map (bookTags . entityVal) bks
-  -- return ["hoge"]
