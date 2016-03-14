@@ -1,4 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
+-- {-# LANGUAGE TypeOperators   #-}
+-- {-# LANGUAGE DataKinds       #-}
 module App
   ( startApp
   ) where
