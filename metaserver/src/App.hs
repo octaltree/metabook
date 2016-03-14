@@ -37,9 +37,9 @@ api = Proxy
 
 server :: Server API
 server = serverBook
+  :<|> serverTag
   :<|> serverCircle
   :<|> serverWriter
-  :<|> serverTag
 
 serverBook :: Server BookEP
 serverBook = handlerGetAllBooks

@@ -29,6 +29,6 @@ type WriterEP = "writers" :> Get '[JSON] [Writer]
 type TagEP = "tags" :> Get '[JSON] [String]
 
 type API = BookEP
+  :<|> TagEP
   :<|> CircleEP
   :<|> WriterEP
-  :<|> TagEP
