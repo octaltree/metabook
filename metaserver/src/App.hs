@@ -69,7 +69,12 @@ handlerGetAllBooks :: EitherT ServantErr IO [Book]
 handlerGetAllBooks = undefined
 
 handlerPostBook :: Book -> EitherT ServantErr IO Book
-handlerPostBook bk = undefined
+handlerPostBook bk = runSqlite sqliteFile $ do
+  entkey <- insert bk
+  ent <- get entkey
+  case ent of
+    Just b -> return b
+    Nothing -> lift $ lift $ lift (left err404 :: EitherT ServantErr IO Book)
 
 handlerGetBook :: Int -> EitherT ServantErr IO Book
 handlerGetBook idx = runSqlite sqliteFile $ do
@@ -88,7 +93,12 @@ handlerGetAllCircles :: EitherT ServantErr IO [Circle]
 handlerGetAllCircles = undefined
 
 handlerPostCircle :: Circle -> EitherT ServantErr IO Circle
-handlerPostCircle cr = undefined
+handlerPostCircle cr = runSqlite sqliteFile $ do
+  entkey <- insert cr
+  ent <- get entkey
+  case ent of
+    Just c -> return c
+    Nothing -> lift $ lift $ lift (left err404 :: EitherT ServantErr IO Circle)
 
 handlerGetCircle :: Int -> EitherT ServantErr IO Circle
 handlerGetCircle idx = runSqlite sqliteFile $ do
