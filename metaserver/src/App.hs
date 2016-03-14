@@ -1,13 +1,27 @@
-
+{-# LANGUAGE OverloadedStrings #-}
 module App
-  ( app
+  ( startApp
   ) where
 
 import Models
 import Routing
 
-import Network.Wai
 import Servant
+import Network.Wai
+import Network.Wai.Handler.Warp
+import Database.Persist
+import Database.Persist.Sqlite
+import Control.Monad.IO.Class (liftIO)
+
+sqliteFile = "test.sqlite"
+
+startApp :: IO ()
+startApp = do
+  migrateModels
+  run 8080 app
+
+migrateModels :: IO ()
+migrateModels = runSqlite sqliteFile $ runMigration migrateAll
 
 app :: Application
 app = serve api server
@@ -35,8 +49,10 @@ serverWriter :: Server WriterEP
 serverWriter = undefined
 
 serverTag :: Server TagEP
-serverTag = undefined
+serverTag = handlerGetAllTags
 
 handlerGetAllBooks = return [Book [] [] [] [] []]
 
 handlerGetBook idx = return $ Book [] [] [] [] []
+
+handlerGetAllTags = undefined
