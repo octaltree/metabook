@@ -43,22 +43,33 @@ server = serverBook
 
 serverBook :: Server BookEP
 serverBook = handlerGetAllBooks
-  :<|> undefined
+  :<|> handlerPostBook
   :<|> handlerGetBook
-  :<|> undefined
-  :<|> undefined
+  :<|> handlerPutBook
+  :<|> handlerDeleteBook
 
 serverCircle :: Server CircleEP
-serverCircle = undefined
+serverCircle = handlerGetAllCircles
+  :<|> handlerPostCircle
+  :<|> handlerGetCircle
+  :<|> handlerPutCircle
+  :<|> handlerDeleteCircle
 
 serverWriter :: Server WriterEP
-serverWriter = undefined
+serverWriter = handlerGetAllWriters
+  :<|> handlerPostWriter
+  :<|> handlerGetWriter
+  :<|> handlerPutWriter
+  :<|> handlerDeleteWriter
 
 serverTag :: Server TagEP
 serverTag = handlerGetAllTags
 
 handlerGetAllBooks :: EitherT ServantErr IO [Book]
-handlerGetAllBooks = return [Book [] [] [] [] [], Book [] [] [] [] []]
+handlerGetAllBooks = undefined
+
+handlerPostBook :: Book -> EitherT ServantErr IO Book
+handlerPostBook bk = undefined
 
 handlerGetBook :: Int -> EitherT ServantErr IO Book
 handlerGetBook idx = runSqlite sqliteFile $ do
@@ -66,6 +77,42 @@ handlerGetBook idx = runSqlite sqliteFile $ do
   case bk of
     Just b -> return $ entityVal b
     Nothing -> lift $ lift $ lift $ (left err404 :: EitherT ServantErr IO Book)
+
+handlerPutBook :: Int -> Book -> EitherT ServantErr IO ()
+handlerPutBook idx bk = undefined
+
+handlerDeleteBook :: Int -> EitherT ServantErr IO ()
+handlerDeleteBook idx = undefined
+
+handlerGetAllCircles :: EitherT ServantErr IO [Circle]
+handlerGetAllCircles = undefined
+
+handlerPostCircle :: Circle -> EitherT ServantErr IO Circle
+handlerPostCircle cr = undefined
+
+handlerGetCircle :: Int -> EitherT ServantErr IO Circle
+handlerGetCircle idx = undefined
+
+handlerPutCircle :: Int -> Circle -> EitherT ServantErr IO ()
+handlerPutCircle idx cr = undefined
+
+handlerDeleteCircle :: Int -> EitherT ServantErr IO ()
+handlerDeleteCircle idx = undefined
+
+handlerGetAllWriters :: EitherT ServantErr IO [Writer]
+handlerGetAllWriters = undefined
+
+handlerPostWriter :: Writer -> EitherT ServantErr IO Writer
+handlerPostWriter wr = undefined
+
+handlerGetWriter :: Int -> EitherT ServantErr IO Writer
+handlerGetWriter idx = undefined
+
+handlerPutWriter :: Int -> Writer -> EitherT ServantErr IO ()
+handlerPutWriter idx wr = undefined
+
+handlerDeleteWriter :: Int -> EitherT ServantErr IO ()
+handlerDeleteWriter idx = undefined
 
 handlerGetAllTags :: EitherT ServantErr IO [String]
 handlerGetAllTags = runSqlite sqliteFile $ do

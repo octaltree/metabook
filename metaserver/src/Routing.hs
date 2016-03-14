@@ -23,7 +23,7 @@ type CircleEP = "circles" :> Get '[JSON] [Circle]
 type WriterEP = "writers" :> Get '[JSON] [Writer]
   :<|> "writers" :> ReqBody '[JSON] Writer :> Post '[JSON] Writer
   :<|> "writers" :> Capture "id" Int :> Get '[JSON] Writer
-  :<|> "writers" :> Capture "id" Int :> ReqBody '[JSON] Writer :> Put '[JSON] Writer
+  :<|> "writers" :> Capture "id" Int :> ReqBody '[JSON] Writer :> Put '[JSON] ()
   :<|> "writers" :> Capture "id" Int :> Delete '[JSON] ()
 
 type TagEP = "tags" :> Get '[JSON] [String]
