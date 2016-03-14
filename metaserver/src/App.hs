@@ -91,7 +91,11 @@ handlerPostCircle :: Circle -> EitherT ServantErr IO Circle
 handlerPostCircle cr = undefined
 
 handlerGetCircle :: Int -> EitherT ServantErr IO Circle
-handlerGetCircle idx = undefined
+handlerGetCircle idx = runSqlite sqliteFile $ do
+  cr <- selectFirst [CircleId ==. (CircleKey $ SqlBackendKey $ fromIntegral idx)] []
+  case cr of
+    Just c -> return $ entityVal c
+    Nothing -> lift $ lift $ lift $ (left err404 :: EitherT ServantErr IO Circle)
 
 handlerPutCircle :: Int -> Circle -> EitherT ServantErr IO ()
 handlerPutCircle idx cr = undefined
@@ -106,7 +110,11 @@ handlerPostWriter :: Writer -> EitherT ServantErr IO Writer
 handlerPostWriter wr = undefined
 
 handlerGetWriter :: Int -> EitherT ServantErr IO Writer
-handlerGetWriter idx = undefined
+handlerGetWriter idx = runSqlite sqliteFile $ do
+  wr <- selectFirst [WriterId ==. (WriterKey $ SqlBackendKey $ fromIntegral idx)] []
+  case wr of
+    Just w -> return $ entityVal w
+    Nothing -> lift $ lift $ lift $ (left err404 :: EitherT ServantErr IO Writer)
 
 handlerPutWriter :: Int -> Writer -> EitherT ServantErr IO ()
 handlerPutWriter idx wr = undefined
