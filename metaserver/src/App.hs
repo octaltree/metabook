@@ -13,8 +13,11 @@ import Network.Wai
 import Network.Wai.Handler.Warp
 import Database.Persist
 import Database.Persist.Sqlite
+import Control.Monad (join)
+import Control.Monad.Trans.Class (lift)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Trans.Either
+import Data.List (nub)
 
 sqliteFile = "test.sqlite"
 
@@ -58,7 +61,14 @@ handlerGetAllBooks :: EitherT ServantErr IO [Book]
 handlerGetAllBooks = return [Book [] [] [] [] [], Book [] [] [] [] []]
 
 handlerGetBook :: Int -> EitherT ServantErr IO Book
-handlerGetBook idx = return $ Book [] [] [] [] []
+handlerGetBook idx = runSqlite sqliteFile $ do
+  bk <- selectFirst [BookId ==. (BookKey $ SqlBackendKey $ fromIntegral idx)] []
+  case bk of
+    Just b -> return $ entityVal b
+    Nothing -> lift $ lift $ lift $ (left err404 :: EitherT ServantErr IO Book)
 
 handlerGetAllTags :: EitherT ServantErr IO [String]
-handlerGetAllTags = undefined
+handlerGetAllTags = runSqlite sqliteFile $ do
+  bks <- selectList [BookId !=. (BookKey $ SqlBackendKey $ -1)] []
+  return $ nub $ concat $ map (bookTags . entityVal) bks
+  -- return ["hoge"]
