@@ -12,6 +12,7 @@ import Network.Wai.Handler.Warp
 import Database.Persist
 import Database.Persist.Sqlite
 import Control.Monad.IO.Class (liftIO)
+import Control.Monad.Trans.Either
 
 sqliteFile = "test.sqlite"
 
@@ -51,8 +52,11 @@ serverWriter = undefined
 serverTag :: Server TagEP
 serverTag = handlerGetAllTags
 
-handlerGetAllBooks = return [Book [] [] [] [] []]
+handlerGetAllBooks :: EitherT ServantErr IO [Book]
+handlerGetAllBooks = return [Book [] [] [] [] [], Book [] [] [] [] []]
 
+handlerGetBook :: Int -> EitherT ServantErr IO Book
 handlerGetBook idx = return $ Book [] [] [] [] []
 
+handlerGetAllTags :: EitherT ServantErr IO [String]
 handlerGetAllTags = undefined
