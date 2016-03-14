@@ -84,7 +84,11 @@ handlerGetBook idx = runSqlite sqliteFile $ do
     Nothing -> lift $ lift $ lift $ (left err404 :: EitherT ServantErr IO Book)
 
 handlerPutBook :: Int -> Book -> EitherT ServantErr IO ()
-handlerPutBook idx bk = undefined
+handlerPutBook idx bk = runSqlite sqliteFile $ do
+  mb <- selectFirst [BookId ==. (BookKey $ SqlBackendKey $ fromIntegral idx)] []
+  case mb of
+    Nothing -> lift $ lift $ lift $ (left err404 :: EitherT ServantErr IO ())
+    Just b -> replace (entityKey b) bk
 
 handlerDeleteBook :: Int -> EitherT ServantErr IO ()
 handlerDeleteBook idx = undefined
@@ -108,7 +112,11 @@ handlerGetCircle idx = runSqlite sqliteFile $ do
     Nothing -> lift $ lift $ lift $ (left err404 :: EitherT ServantErr IO Circle)
 
 handlerPutCircle :: Int -> Circle -> EitherT ServantErr IO ()
-handlerPutCircle idx cr = undefined
+handlerPutCircle idx cr = runSqlite sqliteFile $ do
+  mc <- selectFirst [CircleId ==. (CircleKey $ SqlBackendKey $ fromIntegral idx)] []
+  case mc of
+    Nothing -> lift $ lift $ lift $ (left err404 :: EitherT ServantErr IO ())
+    Just c -> replace (entityKey c) cr
 
 handlerDeleteCircle :: Int -> EitherT ServantErr IO ()
 handlerDeleteCircle idx = undefined
