@@ -7,9 +7,11 @@ module App
 
 import Models
 import Routing
+import Dbm
 import RunDb
 
 import Servant
+import Data.Int (Int64)
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Database.Persist
@@ -65,30 +67,30 @@ tagS :: Server TagEP
 tagS = getAllTagsH
 
 postBookH :: Book -> EitherT ServantErr IO Book
-postBookH = undefined
-getBookH :: Int -> EitherT ServantErr IO Book
-getBookH = undefined
-putBookH :: Int -> Book -> EitherT ServantErr IO ()
+postBookH = RunDb.create . (toTable :: Book -> BookT)
+getBookH :: Int64 -> EitherT ServantErr IO Book
+getBookH = RunDb.read . (toSqlKey :: Int64 -> Key BookT)
+putBookH :: Int64 -> Book -> EitherT ServantErr IO ()
 putBookH = undefined
-deleteBookH :: Int -> EitherT ServantErr IO ()
+deleteBookH :: Int64 -> EitherT ServantErr IO ()
 deleteBookH = undefined
 
 postCircleH :: Circle -> EitherT ServantErr IO Circle
 postCircleH = undefined
-getCircleH :: Int -> EitherT ServantErr IO Circle
+getCircleH :: Int64 -> EitherT ServantErr IO Circle
 getCircleH = undefined
-putCircleH :: Int -> Circle -> EitherT ServantErr IO ()
+putCircleH :: Int64 -> Circle -> EitherT ServantErr IO ()
 putCircleH = undefined
-deleteCircleH :: Int -> EitherT ServantErr IO ()
+deleteCircleH :: Int64 -> EitherT ServantErr IO ()
 deleteCircleH = undefined
 
 postWriterH :: Writer -> EitherT ServantErr IO Writer
 postWriterH = undefined
-getWriterH :: Int -> EitherT ServantErr IO Writer
+getWriterH :: Int64 -> EitherT ServantErr IO Writer
 getWriterH = undefined
-putWriterH :: Int -> Writer -> EitherT ServantErr IO ()
+putWriterH :: Int64 -> Writer -> EitherT ServantErr IO ()
 putWriterH = undefined
-deleteWriterH :: Int -> EitherT ServantErr IO ()
+deleteWriterH :: Int64 -> EitherT ServantErr IO ()
 deleteWriterH = undefined
 
 getAllTagsH :: EitherT ServantErr IO [String]
