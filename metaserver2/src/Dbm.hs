@@ -30,7 +30,7 @@ import Database.Persist.Types
 
 instance FromEntity WriterT Writer where
   fromEntity ent = let
-    rawid = unSqlBackendKey . unWriterTKey . entityKey $ ent
+    rawid = fromSqlKey . entityKey $ ent
     val = entityVal ent
     in return Writer {
       writer_id = Just rawid,
@@ -38,7 +38,7 @@ instance FromEntity WriterT Writer where
 
 instance FromEntity CircleT Circle where
   fromEntity ent = let
-    rawid = unSqlBackendKey . unCircleTKey . entityKey $ ent
+    rawid = fromSqlKey . entityKey $ ent
     val = entityVal ent
     in return Circle {
       circle_id = Just rawid,
@@ -47,7 +47,7 @@ instance FromEntity CircleT Circle where
 
 instance FromEntity BookT Book where
   fromEntity ent = let
-    rawid = unSqlBackendKey . unBookTKey . entityKey $ ent
+    rawid = fromSqlKey . entityKey $ ent
     val = entityVal ent
     in return Book {
       book_id = Just rawid,
