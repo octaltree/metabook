@@ -12,6 +12,7 @@ import Database.Persist
 import Database.Persist.TH
 import Database.Persist.Sql
 import Database.Persist.Sqlite
+import Database.Persist.Class as PC
 
 create :: (Validatable at) => at -> EitherT ServantErr IO at
 create new = do
@@ -39,5 +40,7 @@ update key new = do
       Nothing -> lift $ lift $ lift $ (left err404 :: EitherT ServantErr IO ())
       Just o -> replace key new
 
-delete :: (Validatable at) => Key at -> EitherT ServantErr IO ()
-delete key = undefined
+delete :: (Validatable at, ForeignStrict at) => Key at -> EitherT ServantErr IO ()
+delete key = do
+  foreignStrict key
+  runSqlite sqliteFile $ PC.delete key

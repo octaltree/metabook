@@ -39,6 +39,9 @@ class (ToBackendKey SqlBackend at) => FromTable at a where
 class (ToBackendKey SqlBackend at) => Validatable at where
   validate :: at -> EitherT ServantErr IO at
 
+class ForeignStrict at where
+  foreignStrict :: Key at -> EitherT ServantErr IO ()
+
 instance FromTable WriterT Writer where
   fromTable t i = Writer {
     writer_id = Just i,
