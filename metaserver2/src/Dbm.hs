@@ -108,10 +108,23 @@ instance Validatable BookT where
     if all isJust mcs then return b else left err400
 
 instance ForeignStrict WriterT where
-  foreignStrict = undefined
+  foreignStrict key = runSqlite sqliteFile $ do
+    bks <- selectList ([] :: [Filter BookT]) []
+    crs <- selectList ([] :: [Filter CircleT]) []
+    let
+      tmp = concat [map (bookTWriters . entityVal) bks , map (circleTWriters . entityVal) crs]
+      candidates = map toSqlKey $ nub $ concat tmp
+    if key `elem` candidates
+      then lift $ lift $ lift $ left err400
+      else return ()
 
 instance ForeignStrict CircleT where
-  foreignStrict = undefined
+  foreignStrict key = runSqlite sqliteFile $ do
+    bks <- selectList ([] :: [Filter BookT]) []
+    let candidates = map toSqlKey $ nub $ concat $ map (bookTCircles . entityVal) bks
+    if key `elem` candidates
+      then lift $ lift $ lift $ left err400
+      else return ()
 
 instance ForeignStrict BookT where
-  foreignStrict = undefined
+  foreignStrict key = return ()
