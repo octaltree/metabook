@@ -103,9 +103,10 @@ instance Validatable Circle where
   validate c
     | (== 0) . length . circleBody $ c = left err400
     | (/= 0) . length . circleWriters $ c = do
-      bools <- flip mapM (circleWriters c) $ \x -> runSqlite sqliteFile $ do
-        undefined
-      if all isJust bools then return c else left err400
+      let ws = circleWriters c
+      ms <- flip mapM ws $ \x -> runSqlite sqliteFile $ do
+        selectFirst [WriterId ==. x] []
+      if all isJust ms then return c else left err400
     | otherwise = return c
 
 createCircle :: Circle -> EitherT ServantErr IO Circle
