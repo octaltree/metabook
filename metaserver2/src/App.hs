@@ -97,6 +97,10 @@ getAllTagsH :: EitherT ServantErr IO [String]
 getAllTagsH = runSqlite sqliteFile $ do
   bks <- selectList ([] :: [Filter BookT]) []
   return $ nub $ concat $ map (bookTTags . entityVal) bks
+getAllPublishersH :: EitherT ServantErr IO [String]
+getAllPublishersH = runSqlite sqliteFile $ do
+  bks <- selectList ([] :: [Filter BookT]) []
+  return $ nub $ concat $ map (bookTPublishers . entityVal) bks
 
 getAllWritersH :: EitherT ServantErr IO [Writer]
 getAllWritersH = runSqlite sqliteFile $ do

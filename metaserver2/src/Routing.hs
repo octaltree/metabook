@@ -27,6 +27,8 @@ type WriterEP = "writers" :> Get '[JSON] [Writer]
 
 type TagEP = "tags" :> Get '[JSON] [String]
 
+type PublisherEP = "publishers" :> Get '[JSON] [String]
+
 type API = BookEP
   :<|> TagEP
   :<|> CircleEP
