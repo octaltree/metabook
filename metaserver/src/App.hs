@@ -19,8 +19,6 @@ import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Trans.Either
 import Data.List (nub)
 
-sqliteFile = "test.sqlite"
-
 startApp :: IO ()
 startApp = do
   migrateModels
