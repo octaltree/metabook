@@ -22,21 +22,22 @@ create new = do
     case ent of
       Just n -> return n
 
-read :: (Validatable at) => Int64 -> EitherT ServantErr IO at
-read idx = do
-  let key = toSqlKey idx
+read :: (Validatable at) => Key at -> EitherT ServantErr IO at
+read key = do
   runSqlite sqliteFile $ do
     ent <- get key
     case ent of
       Nothing -> lift $ lift $ lift $ left err404
       Just o -> return o
 
-update :: (Validatable at) => Int64 -> at -> EitherT ServantErr IO ()
-update idx new = do
+update :: (Validatable at) => Key at -> at -> EitherT ServantErr IO ()
+update key new = do
   validate new
-  let key = toSqlKey idx
   runSqlite sqliteFile $ do
     ent <- get key
     case ent of
       Nothing -> lift $ lift $ lift $ (left err404 :: EitherT ServantErr IO ())
       Just o -> replace key new
+
+delete :: (Validatable at) => Key at -> EitherT ServantErr IO ()
+delete key = undefined
