@@ -1,5 +1,5 @@
 -- {-# LANGUAGE EmptyDataDecls             #-}
--- {-# LANGUAGE FlexibleContexts           #-}
+{-# LANGUAGE FlexibleContexts           #-}
 -- {-# LANGUAGE DeriveGeneric              #-}
 {-# LANGUAGE OverloadedStrings          #-}
 {-# LANGUAGE GADTs                      #-}
@@ -28,31 +28,50 @@ import Database.Persist.Sqlite
 import Database.Persist.Types
 -- import Control.Monad.IO.Class (liftIO)
 
-instance FromEntity WriterT Writer where
-  fromEntity ent = let
-    rawid = fromSqlKey . entityKey $ ent
-    val = entityVal ent
-    in return Writer {
-      writer_id = Just rawid,
-      writer_names = writerTNames val}
+class ToTable at a where
+  toTable :: a -> at
 
-instance FromEntity CircleT Circle where
-  fromEntity ent = let
-    rawid = fromSqlKey . entityKey $ ent
-    val = entityVal ent
-    in return Circle {
-      circle_id = Just rawid,
-      circle_names = circleTNames val,
-      circle_writers = circleTWriters val}
+class (ToBackendKey SqlBackend at) => FromTable at a where
+  fromTable :: at -> Int64 -> a
+  fromEntity :: Entity at -> a
+  fromEntity ent = fromTable (entityVal ent) (fromSqlKey $ entityKey $ ent)
 
-instance FromEntity BookT Book where
-  fromEntity ent = let
-    rawid = fromSqlKey . entityKey $ ent
-    val = entityVal ent
-    in return Book {
-      book_id = Just rawid,
-      book_titles = bookTTitles val,
-      book_circles = bookTCircles val,
-      book_writers = bookTWriters val,
-      book_publishers = bookTPublishers val,
-      book_tags = bookTTags val}
+class Validatable a where
+  validate :: a -> EitherT ServantErr IO a
+
+instance FromTable WriterT Writer where
+  fromTable t i = Writer {
+    writer_id = Just i,
+    writer_names = writerTNames t}
+
+instance FromTable CircleT Circle where
+  fromTable t i = Circle {
+    circle_id = Just i,
+    circle_names = circleTNames t,
+    circle_writers = circleTWriters t}
+
+instance FromTable BookT Book where
+  fromTable t i = Book {
+    book_id = Just i,
+    book_titles = bookTTitles t,
+    book_circles = bookTCircles t,
+    book_writers = bookTWriters t,
+    book_publishers = bookTPublishers t,
+    book_tags = bookTTags t}
+
+instance ToTable WriterT Writer where
+  toTable x = WriterT {
+    writerTNames = writer_names x}
+
+instance ToTable CircleT Circle where
+  toTable x = CircleT {
+    circleTNames = circle_names x,
+    circleTWriters = circle_writers x}
+
+instance ToTable BookT Book where
+  toTable x = BookT {
+    bookTTitles = book_titles x,
+    bookTCircles = book_circles x,
+    bookTWriters = book_writers x,
+    bookTPublishers = book_publishers x,
+    bookTTags = book_tags x}

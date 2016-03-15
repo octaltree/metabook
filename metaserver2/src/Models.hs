@@ -56,12 +56,3 @@ data Book = Book { book_id :: Maybe Int64, book_titles :: [String],
 $(deriveJSON defaultOptions ''Writer)
 $(deriveJSON defaultOptions ''Circle)
 $(deriveJSON defaultOptions ''Book)
-
-class ToEntity at a where
-  toEntity :: a -> EitherT ServantErr IO (Entity at)
-
-class FromEntity at a where
-  fromEntity :: Entity at -> EitherT ServantErr IO a
-
-class Validatable a where
-  validate :: a -> EitherT ServantErr IO a
