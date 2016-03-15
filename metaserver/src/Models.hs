@@ -148,7 +148,22 @@ deleteCircle idx = check idx >> delete idx
       deleteWhere [CircleId ==. (CircleKey $ SqlBackendKey $ fromIntegral i)]
 
 instance Validatable Book where
-  validate = undefined
+  validate b
+    | (== 0) . length . bookTitles $ b = left err400
+    | otherwise = checkCircles b >>= checkWriters
+      where
+        checkCircles :: Book -> EitherT ServantErr IO Book
+        checkCircles bk = do
+          let cs = bookCircles bk
+          ms <- flip mapM cs $ \x -> runSqlite sqliteFile $ do
+            selectFirst [CircleId ==. x] []
+          if all isJust ms then return bk else left err400
+        checkWriters :: Book -> EitherT ServantErr IO Book
+        checkWriters bk = do
+          let ws = bookWriters bk
+          ms <- flip mapM ws $ \x -> runSqlite sqliteFile $ do
+            selectFirst [WriterId ==. x] []
+          if all isJust ms then return bk else left err400
 
 createBook :: Book -> EitherT ServantErr IO Book
 createBook new = validate new >>= create
