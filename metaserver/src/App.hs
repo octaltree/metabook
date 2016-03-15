@@ -142,5 +142,5 @@ handlerDeleteWriter idx = undefined
 
 handlerGetAllTags :: EitherT ServantErr IO [String]
 handlerGetAllTags = runSqlite sqliteFile $ do
-  bks <- selectList [BookId !=. (BookKey $ SqlBackendKey $ -1)] []
+  bks <- selectList ([] :: [Filter Book]) []
   return $ nub $ concat $ map (bookTags . entityVal) bks
