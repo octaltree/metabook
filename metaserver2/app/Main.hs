@@ -1,4 +1,6 @@
 module Main where
 
+import App
+
 main :: IO ()
-main = undefined
+main = startApp
