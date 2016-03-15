@@ -18,18 +18,21 @@ import Database.Persist.TH
 -- import Control.Monad.IO.Class (liftIO)
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
+Writer json
+  body [String]
+  UniqueWriterBody body
+  deriving Show Eq
+Circle json
+  body [String]
+  member [WriterId]
+  UniqueCircleBody body
+  deriving Show Eq
 Book json
   titles [String]
   circles [CircleId]
   writers [WriterId]
   publishers [String]
   tags [String]
-  deriving Show
-Circle json
-  body [String]
-  member [WriterId]
-  deriving Show
-Writer json
-  body [String]
-  deriving Show
+  UniqueBookTitles titles
+  deriving Show Eq
 |]
