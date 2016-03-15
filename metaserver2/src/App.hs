@@ -24,8 +24,6 @@ startApp = do
   migrateModels
   run 8080 app
 
-sqliteFile = "test.sqlite"
-
 migrateModels :: IO ()
 migrateModels = runSqlite sqliteFile $ runMigration migrateAll
 

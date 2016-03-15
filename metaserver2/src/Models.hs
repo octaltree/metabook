@@ -24,6 +24,7 @@ import Database.Persist.TH
 import Database.Persist.Sql
 import Database.Persist.Sqlite
 import Database.Persist.Types
+import Data.Text.Internal (Text)
 -- import Control.Monad.IO.Class (liftIO)
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
@@ -56,3 +57,5 @@ data Book = Book { book_id :: Maybe Int64, book_titles :: [String],
 $(deriveJSON defaultOptions ''Writer)
 $(deriveJSON defaultOptions ''Circle)
 $(deriveJSON defaultOptions ''Book)
+
+sqliteFile = "test.sqlite" :: Text

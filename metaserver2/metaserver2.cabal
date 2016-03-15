@@ -29,6 +29,7 @@ library
                      , persistent-template
                      , persistent-sqlite
                      , either
+                     , text
   default-language:    Haskell2010
 
 executable metaserver2

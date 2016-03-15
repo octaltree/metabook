@@ -36,8 +36,8 @@ class (ToBackendKey SqlBackend at) => FromTable at a where
   fromEntity :: Entity at -> a
   fromEntity ent = fromTable (entityVal ent) (fromSqlKey $ entityKey $ ent)
 
-class Validatable a where
-  validate :: a -> EitherT ServantErr IO a
+class (ToBackendKey SqlBackend at) => Validatable at where
+  validate :: at -> EitherT ServantErr IO at
 
 instance FromTable WriterT Writer where
   fromTable t i = Writer {
@@ -75,3 +75,31 @@ instance ToTable BookT Book where
     bookTWriters = book_writers x,
     bookTPublishers = book_publishers x,
     bookTTags = book_tags x}
+
+lengthNotZero :: a -> (a -> [b]) -> EitherT ServantErr IO a
+lengthNotZero t f
+  | (== 0) . length . f $ t = left err400
+  | otherwise = return t
+
+instance Validatable WriterT where
+  validate w = lengthNotZero w writerTNames
+
+instance Validatable CircleT where
+  validate c = do
+    lengthNotZero c circleTNames
+    let ws = circleTWriters c
+    ms <- flip mapM ws $ \x -> runSqlite sqliteFile $ do
+      selectFirst [WriterTId ==. (toSqlKey x)] []
+    if all isJust ms then return c else left err400
+
+instance Validatable BookT where
+  validate b = do
+    lengthNotZero b bookTTitles
+    let ws = bookTWriters b
+    mws <- flip mapM ws $ \x -> runSqlite sqliteFile $ do
+      selectFirst [WriterTId ==. (toSqlKey x)] []
+    if all isJust mws then return b else left err400
+    let cs = bookTCircles b
+    mcs <- flip mapM cs $ \x -> runSqlite sqliteFile $ do
+      selectFirst [CircleTId ==. (toSqlKey x)] []
+    if all isJust mcs then return b else left err400
