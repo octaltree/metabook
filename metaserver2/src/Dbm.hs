@@ -106,3 +106,12 @@ instance Validatable BookT where
     mcs <- flip mapM cs $ \x -> runSqlite sqliteFile $ do
       selectFirst [CircleTId ==. (toSqlKey x)] []
     if all isJust mcs then return b else left err400
+
+instance ForeignStrict WriterT where
+  foreignStrict = undefined
+
+instance ForeignStrict CircleT where
+  foreignStrict = undefined
+
+instance ForeignStrict BookT where
+  foreignStrict = undefined

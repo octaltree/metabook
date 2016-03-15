@@ -71,27 +71,27 @@ postBookH = RunDb.create . (toTable :: Book -> BookT)
 getBookH :: Int64 -> EitherT ServantErr IO Book
 getBookH = RunDb.read . (toSqlKey :: Int64 -> Key BookT)
 putBookH :: Int64 -> Book -> EitherT ServantErr IO ()
-putBookH = undefined
+putBookH i n = RunDb.update (toSqlKey i) (toTable n :: BookT)
 deleteBookH :: Int64 -> EitherT ServantErr IO ()
-deleteBookH = undefined
+deleteBookH = RunDb.delete . (toSqlKey :: Int64 -> Key BookT)
 
 postCircleH :: Circle -> EitherT ServantErr IO Circle
-postCircleH = undefined
+postCircleH = RunDb.create . (toTable :: Circle -> CircleT)
 getCircleH :: Int64 -> EitherT ServantErr IO Circle
-getCircleH = undefined
+getCircleH = RunDb.read . (toSqlKey :: Int64 -> Key CircleT)
 putCircleH :: Int64 -> Circle -> EitherT ServantErr IO ()
-putCircleH = undefined
+putCircleH i n = RunDb.update (toSqlKey i) (toTable n :: CircleT)
 deleteCircleH :: Int64 -> EitherT ServantErr IO ()
-deleteCircleH = undefined
+deleteCircleH = RunDb.delete . (toSqlKey :: Int64 -> Key CircleT)
 
 postWriterH :: Writer -> EitherT ServantErr IO Writer
-postWriterH = undefined
+postWriterH = RunDb.create . (toTable :: Writer -> WriterT)
 getWriterH :: Int64 -> EitherT ServantErr IO Writer
-getWriterH = undefined
+getWriterH = RunDb.read . (toSqlKey :: Int64 -> Key WriterT)
 putWriterH :: Int64 -> Writer -> EitherT ServantErr IO ()
-putWriterH = undefined
+putWriterH i n = RunDb.update (toSqlKey i) (toTable n :: WriterT)
 deleteWriterH :: Int64 -> EitherT ServantErr IO ()
-deleteWriterH = undefined
+deleteWriterH = RunDb.delete . (toSqlKey :: Int64 -> Key WriterT)
 
 getAllTagsH :: EitherT ServantErr IO [String]
 getAllTagsH = undefined
