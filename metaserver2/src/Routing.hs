@@ -4,10 +4,12 @@
 module Routing where
 
 import Models
+import Books
+
 import Servant
 import Data.Int (Int64)
 
-type BookEP = "books" :> Get '[JSON] [Book]
+type BookEP = "books" :> ReqBody '[JSON] Exclude :> Get '[JSON] [Book]
   :<|> "books" :> ReqBody '[JSON] Book :> Post '[JSON] Book
   :<|> "books" :> Capture "id" Int64 :> Get '[JSON] Book
   :<|> "books" :> Capture "id" Int64 :> ReqBody '[JSON] Book :> Put '[JSON] ()

@@ -9,6 +9,7 @@ import Models
 import Routing
 import Dbm
 import RunDb
+import Books
 
 import Servant
 import Data.Int (Int64)
@@ -110,5 +111,5 @@ getAllCirclesH :: EitherT ServantErr IO [Circle]
 getAllCirclesH = runSqlite sqliteFile $ do
   crs <- selectList ([] :: [Filter CircleT]) []
   return $ map fromEntity crs
-getAllBooksH :: EitherT ServantErr IO [Book]
-getAllBooksH = undefined
+getAllBooksH :: Exclude -> EitherT ServantErr IO [Book]
+getAllBooksH ex = undefined
