@@ -7,6 +7,7 @@ module App
 
 import Models
 import Routing
+import RunDb
 
 import Servant
 import Network.Wai
