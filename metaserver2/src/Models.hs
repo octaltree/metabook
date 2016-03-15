@@ -12,6 +12,7 @@
 module Models where
 
 import Servant
+import Data.Int (Int64)
 import Data.List (nub)
 import Data.Maybe (isJust)
 import Control.Monad.Trans.Class (lift)
@@ -45,11 +46,11 @@ BookT
   deriving Show Eq
 |]
 
-data Writer = Writer { writer_id :: Maybe Int, writer_names :: [String] } deriving (Show, Eq)
-data Circle = Circle { circle_id :: Maybe Int, circle_names :: [String],
-  circle_writers :: [Int] } deriving (Show, Eq)
-data Book = Book { book_id :: Maybe Int, book_titles :: [String],
-  book_circles :: [Int], book_writers :: [Int], book_publishers :: [String],
+data Writer = Writer { writer_id :: Maybe Int64, writer_names :: [String] } deriving (Show, Eq)
+data Circle = Circle { circle_id :: Maybe Int64, circle_names :: [String],
+  circle_writers :: [Int64] } deriving (Show, Eq)
+data Book = Book { book_id :: Maybe Int64, book_titles :: [String],
+  book_circles :: [Int64], book_writers :: [Int64], book_publishers :: [String],
   book_tags :: [String] } deriving (Show, Eq)
 
 $(deriveJSON defaultOptions ''Writer)
@@ -61,3 +62,6 @@ class ToEntity at a where
 
 class FromEntity at a where
   fromEntity :: Entity at -> EitherT ServantErr IO a
+
+class Validatable a where
+  validate :: a -> EitherT ServantErr IO a
