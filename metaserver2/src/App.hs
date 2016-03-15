@@ -94,11 +94,17 @@ deleteWriterH :: Int64 -> EitherT ServantErr IO ()
 deleteWriterH = RunDb.delete . (toSqlKey :: Int64 -> Key WriterT)
 
 getAllTagsH :: EitherT ServantErr IO [String]
-getAllTagsH = undefined
+getAllTagsH = runSqlite sqliteFile $ do
+  bks <- selectList ([] :: [Filter BookT]) []
+  return $ nub $ concat $ map (bookTTags . entityVal) bks
 
 getAllWritersH :: EitherT ServantErr IO [Writer]
-getAllWritersH = undefined
+getAllWritersH = runSqlite sqliteFile $ do
+  wrs <- selectList ([] :: [Filter WriterT]) []
+  return $ map fromEntity wrs
 getAllCirclesH :: EitherT ServantErr IO [Circle]
-getAllCirclesH = undefined
+getAllCirclesH = runSqlite sqliteFile $ do
+  crs <- selectList ([] :: [Filter CircleT]) []
+  return $ map fromEntity crs
 getAllBooksH :: EitherT ServantErr IO [Book]
 getAllBooksH = undefined
