@@ -12,6 +12,7 @@
 module Models where
 
 import Servant
+import Data.List (nub)
 import Data.Maybe (isJust)
 import Control.Monad.Trans.Class (lift)
 import Control.Monad.Trans.Either (EitherT, left)
@@ -49,7 +50,6 @@ sqliteFile = "test.sqlite"
 class Validatable a where
   validate :: a -> EitherT ServantErr IO a
 
-
 instance Validatable Writer where
   validate w
     | (== 0) . length . writerBody $ w = left err400
@@ -82,7 +82,22 @@ updateWriter idx new = validate new >>= update idx
         Just o -> replace (entityKey o) n
 
 deleteWriter :: Int -> EitherT ServantErr IO ()
-deleteWriter idx = undefined
+deleteWriter idx = check idx >> delete idx
+  where
+    check :: Int -> EitherT ServantErr IO ()
+    check i = runSqlite sqliteFile $ do
+      bks <- selectList ([] :: [Filter Book]) []
+      crs <- selectList ([] :: [Filter Circle]) []
+      let
+        key = WriterKey $ SqlBackendKey $ fromIntegral i
+        existinbks = elem key $ nub $ concat $ map (bookWriters . entityVal) bks
+        existincrs = elem key $ nub $ concat $ map (circleWriters . entityVal) crs
+      if existinbks || existincrs
+        then lift $ lift $ lift (left err500)
+        else return ()
+    delete :: Int -> EitherT ServantErr IO ()
+    delete i = runSqlite sqliteFile $ do
+      deleteWhere [CircleId ==. (CircleKey $ SqlBackendKey $ fromIntegral i)]
 
 instance Validatable Circle where
   validate c
@@ -119,7 +134,17 @@ updateCircle idx new = validate new >>= update idx
         Just o -> replace (entityKey o) n
 
 deleteCircle :: Int -> EitherT ServantErr IO ()
-deleteCircle idx = undefined
+deleteCircle idx = check idx >> delete idx
+  where
+    check :: Int -> EitherT ServantErr IO ()
+    check i = runSqlite sqliteFile $ do
+      bks <- selectList ([] :: [Filter Book]) []
+      if elem (CircleKey $ SqlBackendKey $ fromIntegral i) $ nub $ concat $ map (bookCircles . entityVal) bks
+        then lift $ lift $ lift (left err500)
+        else return ()
+    delete :: Int -> EitherT ServantErr IO ()
+    delete i = runSqlite sqliteFile $ do
+      deleteWhere [CircleId ==. (CircleKey $ SqlBackendKey $ fromIntegral i)]
 
 instance Validatable Book where
   validate = undefined
