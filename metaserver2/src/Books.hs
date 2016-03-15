@@ -12,3 +12,8 @@ data Exclude = And Exclude Exclude | Or Exclude Exclude | Not Exclude
   deriving (Show, Read, Eq)
 
 $(deriveJSON defaultOptions ''Exclude)
+
+toLeafNot :: Exclude -> Exclude
+toLeafNot e = toLeaf e False
+  where
+    toLeaf e notize = undefined
