@@ -56,8 +56,3 @@ instance FromEntity BookT Book where
       book_writers = bookTWriters val,
       book_publishers = bookTPublishers val,
       book_tags = bookTTags val}
-
-instance ToEntity WriterT Writer where
-  toEntity kv = case writer_id kv of
-    Nothing -> undefined
-    Just idx -> undefined

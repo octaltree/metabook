@@ -33,13 +33,13 @@ WriterT
   deriving Show Eq
 CircleT
   names [String]
-  writers [Int]
+  writers [Int64]
   UniqueCircleNames names
   deriving Show Eq
 BookT
   titles [String]
-  circles [Int]
-  writers [Int]
+  circles [Int64]
+  writers [Int64]
   publishers [String]
   tags [String]
   UniqueBookTitles titles
