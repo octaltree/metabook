@@ -1,4 +1,4 @@
-name:                metaserver2
+name:                metaserver
 version:             0.1.0.0
 synopsis:            Initial project template from stack
 description:         Please see README.md
@@ -34,23 +34,23 @@ library
                      , text
   default-language:    Haskell2010
 
-executable metaserver2
+executable metaserver
   hs-source-dirs:      app
   main-is:             Main.hs
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
-                     , metaserver2
+                     , metaserver
   default-language:    Haskell2010
 
-test-suite metaserver2-test
+test-suite metaserver-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
   build-depends:       base
-                     , metaserver2
+                     , metaserver
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
 
 source-repository head
   type:     git
-  location: https://github.com/octaltree/metaserver2
+  location: https://github.com/octaltree/metaserver
