@@ -4,5 +4,5 @@
 * HDDのフォルダとメタ本を紐付けhttpでapiを提供する server
 * html, JSONPを用いた client
 
-# 進捗
+## 進捗
 * metaserverを書いた jsonp対応してない
