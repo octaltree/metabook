@@ -112,4 +112,8 @@ getAllCirclesH = runSqlite sqliteFile $ do
   crs <- selectList ([] :: [Filter CircleT]) []
   return $ map fromEntity crs
 getAllBooksH :: Exclude -> EitherT ServantErr IO [Book]
-getAllBooksH ex = undefined
+getAllBooksH ex = do
+  all <- runSqlite sqliteFile $ do
+    bs <- selectList ([] :: [Filter BookT]) []
+    return $ map (fromEntity :: Entity BookT -> Book)  bs
+  return $ exceptByExclude all ex
