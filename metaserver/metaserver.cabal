@@ -25,6 +25,7 @@ library
                      , aeson
                      , servant-server
                      , wai
+                     , wai-cors
                      , warp
                      , transformers
                      , persistent

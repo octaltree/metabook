@@ -15,6 +15,7 @@ import Servant
 import Data.Int (Int64)
 import Network.Wai
 import Network.Wai.Handler.Warp
+import Network.Wai.Middleware.Cors
 import Database.Persist
 import Database.Persist.Sqlite
 import Control.Monad (join)
@@ -32,7 +33,7 @@ migrateModels :: IO ()
 migrateModels = runSqlite sqliteFile $ runMigration migrateAll
 
 app :: Application
-app = serve api server
+app = simpleCors $ serve api server
 
 api :: Proxy API
 api = Proxy
