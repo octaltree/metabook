@@ -58,3 +58,23 @@ class (PersistEntity (Table a), ToBackendKey SqlBackend (Table a)) => TableWrapp
   toEntity x = Entity (toSqlKey $ key x) (toTable x)
   fromEntity :: Entity (Table a) -> a
   fromEntity x = fromTable (entityVal x) (fromSqlKey $ entityKey x)
+
+instance TableWrapper BookAt where
+  key = bookat_id
+  toTable x = BookAtT {
+    bookAtTBookId = bookat_book_id x,
+    bookAtTAt = bookat_at x}
+  fromTable x i = BookAt {
+    bookat_id = i,
+    bookat_book_id = bookAtTBookId x,
+    bookat_at = bookAtTAt x}
+
+instance TableWrapper At where
+  key = at_id
+  toTable x = AtT {
+    atTDescription = at_description x,
+    atTPath = at_path x}
+  fromTable x i = At {
+    at_id = i,
+    at_description = atTDescription x,
+    at_path = atTPath x}
