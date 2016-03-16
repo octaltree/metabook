@@ -8,8 +8,10 @@
 module Models
   ( Table
   , BookAt
-  , Path
-  )where
+  , At
+  ) where
+
+import Description
 
 import Data.Int (Int64)
 import Database.Persist
@@ -17,33 +19,35 @@ import Database.Persist.TH
 import Database.Persist.Sql
 import Data.Aeson.TH
 
-share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
+$(share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 BookAtT
   bookId Int64
-  at String Int64 Either
+  at Int64
   deriving Show Eq
-PathT
-  path String String Either
+AtT
+  description Description
+  path String
   deriving Show Eq
-|]
+|])
 
 data BookAt = BookAt {
   bookat_id :: Int64,
   bookat_book_id :: Int64,
-  bookat_at :: Either String Int64
+  bookat_at :: Int64
   } deriving (Show, Eq)
 
-data Path = Path {
-  path_id :: Int64,
-  path_path :: Either String String
+data At = At {
+  at_id :: Int64,
+  at_description :: Description,
+  at_path :: String
   } deriving (Show, Eq)
 
 $(deriveJSON defaultOptions ''BookAt)
-$(deriveJSON defaultOptions ''Path)
+$(deriveJSON defaultOptions ''At)
 
 type family Table a :: *
 type instance Table BookAt = BookAtT
-type instance Table Path = PathT
+type instance Table At = AtT
 
 class (PersistEntity (Table a), ToBackendKey SqlBackend (Table a)) => TableWrapper a where
   key :: a -> Int64
