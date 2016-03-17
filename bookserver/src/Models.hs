@@ -7,9 +7,12 @@
 {-# LANGUAGE FlexibleContexts           #-}
 {-# LANGUAGE OverloadedStrings          #-}
 module Models
-  ( Table
-  , BookAt
-  , At
+  ( Table (..)
+  , BookAt (..)
+  , At (..)
+  , TableWrapper (..)
+  , Validatable (..)
+  , sqliteFile
   ) where
 
 import Description
@@ -93,16 +96,16 @@ instance TableWrapper At where
     at_description = atTDescription x,
     at_path = atTPath x}
 
-class (TableWrapper a) => Validatable a where
-  validate :: (Table a) -> EitherT ServantErr IO (Table a)
+class (PersistEntity at, ToBackendKey SqlBackend at) => Validatable at where
+  validate :: at -> EitherT ServantErr IO at
 
-instance Validatable BookAt where
+instance Validatable BookAtT where
   validate x = do
     ma <- (\a -> runSqlite sqliteFile $ do
       selectFirst [AtTId ==. (toSqlKey a)] []) (bookAtTAt x)
     if isJust ma then return x else left err400
 
-instance Validatable At where
+instance Validatable AtT where
   validate x = case atTDescription x of
     Description.URI -> if isURI $ atTPath x then return x else left err400
     RelativePath -> if isRelativeReference $ atTPath x then return x else left err400
