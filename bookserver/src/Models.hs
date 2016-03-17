@@ -6,16 +6,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE FlexibleContexts           #-}
 {-# LANGUAGE OverloadedStrings          #-}
-module Models
-  ( Table (..)
-  , BookAt (..)
-  , At (..)
-  , TableWrapper (..)
-  , Validatable (..)
-  , ForeignStrict (..)
-  , sqliteFile
-  , migrateAll
-  ) where
+module Models where
 
 import Description
 
