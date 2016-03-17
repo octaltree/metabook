@@ -1,1 +1,6 @@
-module App where
+module App
+  ( startApp
+  ) where
+
+startApp :: IO ()
+startApp = undefined
