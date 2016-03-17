@@ -12,6 +12,7 @@ module Models
   , At (..)
   , TableWrapper (..)
   , Validatable (..)
+  , ForeignStrict (..)
   , sqliteFile
   ) where
 
@@ -24,6 +25,7 @@ import Database.Persist.Sql
 import Database.Persist.Sqlite
 import Data.Aeson.TH
 import Data.Time
+import Control.Monad.Trans (lift)
 import Control.Monad.Trans.Either (EitherT, left)
 import Servant
 import Network.URI (isURI, isRelativeReference)
@@ -110,3 +112,18 @@ instance Validatable AtT where
     Description.URI -> if isURI $ atTPath x then return x else left err400
     RelativePath -> if isRelativeReference $ atTPath x then return x else left err400
     Others -> return x
+
+class (PersistEntity at, ToBackendKey SqlBackend at) => ForeignStrict at where
+  foreignStrict :: Key at -> EitherT ServantErr IO ()
+
+instance ForeignStrict BookAtT where
+  foreignStrict _ = return ()
+
+instance ForeignStrict AtT where
+  foreignStrict key = do
+    runSqlite sqliteFile $ do
+      bas <- selectList ([] :: [Filter BookAtT]) []
+      let candidates = map (toSqlKey . bookAtTAt . entityVal) bas
+      if key `elem` candidates
+        then lift $ lift $ lift $ left err400
+        else return ()
