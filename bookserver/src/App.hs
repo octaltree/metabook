@@ -64,18 +64,25 @@ putBookAtH i n = do
 deleteBookAtH :: Int64 -> EitherT ServantErr IO ()
 deleteBookAtH = RunDb.delete . (toSqlKey :: Int64 -> Key BookAtT)
 getAllBookAtsH :: EitherT ServantErr IO [BookAt]
-getAllBookAtsH = undefined
+getAllBookAtsH = runSqlite sqliteFile $ do
+  xs <- selectList ([] :: [Filter BookAtT]) []
+  return $ map fromEntity xs
 
 postAtH :: At -> EitherT ServantErr IO At
-postAtH = undefined
+postAtH = RunDb.create <=< liftIO . (toTable :: At -> IO AtT)
 getAtH :: Int64 -> EitherT ServantErr IO At
-getAtH = undefined
+getAtH = RunDb.read . (toSqlKey :: Int64 -> Key AtT)
 putAtH :: Int64 -> At -> EitherT ServantErr IO ()
-putAtH i n = undefined
+putAtH i n = do
+  let key = toSqlKey i :: Key AtT
+  a <- liftIO $ toTable n :: EitherT ServantErr IO AtT
+  RunDb.update key a
 deleteAtH :: Int64 -> EitherT ServantErr IO ()
-deleteAtH = undefined
+deleteAtH = RunDb.delete . (toSqlKey :: Int64 -> Key AtT)
 getAllAtsH :: EitherT ServantErr IO [At]
-getAllAtsH = undefined
+getAllAtsH = runSqlite sqliteFile $ do
+  xs <- selectList ([] :: [Filter AtT]) []
+  return $ map fromEntity xs
 
 getAllBookAtsBookH :: Int64 -> EitherT ServantErr IO [BookAt]
 getAllBookAtsBookH = undefined
