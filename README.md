@@ -1,9 +1,9 @@
 # 本を管理するもの
 
 * 本のメタ情報を管理してhttp CORS jsonでapiを提供する metaserver
-* HDDのフォルダとメタ本を紐付けhttpでapiを提供する server
-* html, jsで client
+* 本とメタ本を紐付け CRUD操作を提供する bookserver
+* htmlでGUIを提供するwebserver
 
 ## 進捗
 * metaserverを書いた
-* server書いた
+* bookserver書いた
