@@ -40,7 +40,7 @@ update key new = do
       Nothing -> lift $ lift $ lift $ (left err404 :: EitherT ServantErr IO ())
       Just o -> replace key new
 
-delete :: (TableWrapper a at, Validatable at, ForeignStrict at) => Key at -> EitherT ServantErr IO ()
+delete :: (Validatable at, ForeignStrict at) => Key at -> EitherT ServantErr IO ()
 delete key = do
   foreignStrict key
   runSqlite sqliteFile $ PC.delete key

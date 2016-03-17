@@ -53,11 +53,11 @@ bookS = getAllBookAtsBookH
 postBookAtH :: BookAt -> EitherT ServantErr IO BookAt
 postBookAtH = undefined
 getBookAtH :: Int64 -> EitherT ServantErr IO BookAt
-getBookAtH = undefined
+getBookAtH = RunDb.read . (toSqlKey :: Int64 -> Key BookAtT)
 putBookAtH :: Int64 -> BookAt -> EitherT ServantErr IO ()
 putBookAtH i n = undefined
 deleteBookAtH :: Int64 -> EitherT ServantErr IO ()
-deleteBookAtH = undefined
+deleteBookAtH = RunDb.delete . (toSqlKey :: Int64 -> Key BookAtT)
 getAllBookAtsH :: EitherT ServantErr IO [BookAt]
 getAllBookAtsH = undefined
 
