@@ -54,19 +54,15 @@ data At = At {
 $(deriveJSON defaultOptions ''BookAt)
 $(deriveJSON defaultOptions ''At)
 
-type family Table a :: *
-type instance Table BookAt = BookAtT
-type instance Table At = AtT
-
-class (PersistEntity (Table a), ToBackendKey SqlBackend (Table a)) => TableWrapper a where
+class (PersistEntity at, ToBackendKey SqlBackend at) => TableWrapper a at where
   key :: a -> Maybe Int64
-  toTable :: a -> IO (Table a)
-  fromTable :: Table a -> Int64 -> a
+  toTable :: a -> IO at
+  fromTable :: at -> Int64 -> a
 
-  fromEntity :: Entity (Table a) -> a
+  fromEntity :: Entity at -> a
   fromEntity x = fromTable (entityVal x) (fromSqlKey $ entityKey x)
 
-instance TableWrapper BookAt where
+instance TableWrapper BookAt BookAtT where
   key = bookat_id
   toTable x = do
     now <- getCurrentTime
@@ -80,7 +76,7 @@ instance TableWrapper BookAt where
     bookat_at = bookAtTAt x,
     bookat_post_at = Just $ bookAtTPostAt x}
 
-instance TableWrapper At where
+instance TableWrapper At AtT where
   key = at_id
   toTable x = return AtT {
     atTDescription = at_description x,
