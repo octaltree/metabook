@@ -27,6 +27,7 @@ library
                      , warp
                      , persistent
                      , persistent-template
+                     , time
   default-language:    Haskell2010
 
 executable bookserver
