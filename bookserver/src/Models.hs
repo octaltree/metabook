@@ -23,6 +23,7 @@ $(share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 BookAtT
   bookId Int64
   at Int64
+  UniqueBookAtAt at
   deriving Show Eq
 AtT
   description Description
