@@ -5,6 +5,7 @@
 {-# LANGUAGE MultiParamTypeClasses      #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE FlexibleContexts           #-}
+{-# LANGUAGE OverloadedStrings          #-}
 module Models
   ( Table
   , BookAt
@@ -17,8 +18,13 @@ import Data.Int (Int64)
 import Database.Persist
 import Database.Persist.TH
 import Database.Persist.Sql
+import Database.Persist.Sqlite
 import Data.Aeson.TH
 import Data.Time
+import Control.Monad.Trans.Either (EitherT, left)
+import Servant
+import Network.URI (isURI, isRelativeReference)
+import Data.Maybe (isJust)
 
 $(share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 BookAtT
@@ -32,6 +38,8 @@ AtT
   path String
   deriving Show Eq
 |])
+
+sqliteFile = "test.sqlite"
 
 data BookAt = BookAt {
   bookat_id :: Maybe Int64,
@@ -84,3 +92,18 @@ instance TableWrapper At where
     at_id = Just i,
     at_description = atTDescription x,
     at_path = atTPath x}
+
+class (TableWrapper a) => Validatable a where
+  validate :: (Table a) -> EitherT ServantErr IO (Table a)
+
+instance Validatable BookAt where
+  validate x = do
+    ma <- (\a -> runSqlite sqliteFile $ do
+      selectFirst [AtTId ==. (toSqlKey a)] []) (bookAtTAt x)
+    if isJust ma then return x else left err400
+
+instance Validatable At where
+  validate x = case atTDescription x of
+    Description.URI -> if isURI $ atTPath x then return x else left err400
+    RelativePath -> if isRelativeReference $ atTPath x then return x else left err400
+    Others -> return x

@@ -26,8 +26,11 @@ library
                      , wai-cors
                      , warp
                      , persistent
+                     , persistent-sqlite
                      , persistent-template
                      , time
+                     , either
+                     , network-uri
   default-language:    Haskell2010
 
 executable bookserver
