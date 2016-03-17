@@ -31,7 +31,7 @@ read key = do
       Nothing -> lift $ lift $ lift $ left err404
       Just o -> return $ fromTable o (fromSqlKey key)
 
-update :: (TableWrapper a at, Validatable at) => Key at -> at -> EitherT ServantErr IO ()
+update :: Validatable at => Key at -> at -> EitherT ServantErr IO ()
 update key new = do
   validate new
   runSqlite sqliteFile $ do

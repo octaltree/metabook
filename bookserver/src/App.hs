@@ -13,6 +13,8 @@ import Network.Wai (Application)
 import Network.Wai.Handler.Warp (run)
 import Network.Wai.Middleware.Cors (simpleCors)
 import Control.Monad.Trans.Either (EitherT, runEitherT, left)
+import Control.Monad.Trans (liftIO)
+import Control.Monad ((<=<))
 
 startApp :: IO ()
 startApp = do
@@ -51,11 +53,14 @@ bookS :: Server BookEP
 bookS = getAllBookAtsBookH
 
 postBookAtH :: BookAt -> EitherT ServantErr IO BookAt
-postBookAtH = undefined
+postBookAtH = RunDb.create <=< liftIO . (toTable :: BookAt -> IO BookAtT)
 getBookAtH :: Int64 -> EitherT ServantErr IO BookAt
 getBookAtH = RunDb.read . (toSqlKey :: Int64 -> Key BookAtT)
 putBookAtH :: Int64 -> BookAt -> EitherT ServantErr IO ()
-putBookAtH i n = undefined
+putBookAtH i n = do
+  let key = toSqlKey i :: Key BookAtT
+  b <- liftIO $ toTable n :: EitherT ServantErr IO BookAtT
+  RunDb.update key b
 deleteBookAtH :: Int64 -> EitherT ServantErr IO ()
 deleteBookAtH = RunDb.delete . (toSqlKey :: Int64 -> Key BookAtT)
 getAllBookAtsH :: EitherT ServantErr IO [BookAt]
