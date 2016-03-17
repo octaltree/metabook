@@ -14,6 +14,7 @@ module Models
   , Validatable (..)
   , ForeignStrict (..)
   , sqliteFile
+  , migrateAll
   ) where
 
 import Description
