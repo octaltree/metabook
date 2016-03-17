@@ -6,3 +6,4 @@
 
 ## 進捗
 * metaserverを書いた
+* server書いた
