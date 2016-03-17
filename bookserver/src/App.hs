@@ -85,4 +85,6 @@ getAllAtsH = runSqlite sqliteFile $ do
   return $ map fromEntity xs
 
 getAllBookAtsBookH :: Int64 -> EitherT ServantErr IO [BookAt]
-getAllBookAtsBookH = undefined
+getAllBookAtsBookH i = runSqlite sqliteFile $ do
+  xs <- selectList [BookAtTBookId ==. i] []
+  return $ map fromEntity xs
