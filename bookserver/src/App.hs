@@ -19,7 +19,7 @@ import Control.Monad ((<=<))
 startApp :: IO ()
 startApp = do
   migrateModels
-  run 8080 app
+  run 8081 app
 
 migrateModels :: IO ()
 migrateModels = runSqlite sqliteFile $ runMigration migrateAll
